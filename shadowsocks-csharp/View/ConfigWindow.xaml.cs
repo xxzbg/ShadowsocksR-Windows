@@ -1,4 +1,5 @@
 ﻿using Shadowsocks.Controller;
+using Shadowsocks.Controller.HttpRequest;
 using Shadowsocks.Encryption;
 using Shadowsocks.Model;
 using Shadowsocks.Util;

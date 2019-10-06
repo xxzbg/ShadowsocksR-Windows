@@ -1,4 +1,6 @@
 ﻿using Shadowsocks.Controller;
+using Shadowsocks.Controller.HttpRequest;
+using Shadowsocks.Controller.Service;
 using Shadowsocks.Model;
 using Shadowsocks.Util;
 using Shadowsocks.ViewModel;
@@ -12,7 +14,7 @@ namespace Shadowsocks.View
 {
     public partial class SubscribeWindow
     {
-        public SubscribeWindow(ShadowsocksController controller, UpdateSubscribeManager updateSubscribeManager, UpdateFreeNode updateFreeNodeChecker)
+        public SubscribeWindow(ShadowsocksController controller, UpdateSubscribeManager updateSubscribeManager, UpdateNode updateNodeChecker)
         {
             InitializeComponent();
             I18NUtil.SetLanguage(Resources, @"SubscribeWindow");
@@ -23,7 +25,7 @@ namespace Shadowsocks.View
             };
             _controller = controller;
             _updateSubscribeManager = updateSubscribeManager;
-            _updateFreeNodeChecker = updateFreeNodeChecker;
+            _updateNodeChecker = updateNodeChecker;
             _controller.ConfigChanged += controller_ConfigChanged;
             LoadCurrentConfiguration();
             SubscribeWindowViewModel.SubscribesChanged += SubscribeWindowViewModel_SubscribesChanged;
@@ -35,7 +37,7 @@ namespace Shadowsocks.View
         }
 
         private readonly ShadowsocksController _controller;
-        private readonly UpdateFreeNode _updateFreeNodeChecker;
+        private readonly UpdateNode _updateNodeChecker;
         private readonly UpdateSubscribeManager _updateSubscribeManager;
         private Configuration _modifiedConfiguration;
 
@@ -203,23 +205,7 @@ namespace Shadowsocks.View
                 if (Save())
                 {
                     ApplyButton.IsEnabled = false;
-                    _updateSubscribeManager.CreateTask(_modifiedConfiguration, _updateFreeNodeChecker, true, true, serverSubscribe);
-                }
-                else
-                {
-                    SaveError();
-                }
-            }
-        }
-
-        private void UpdateBypassProxyButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (ServerSubscribeListBox.SelectedItem is ServerSubscribe serverSubscribe)
-            {
-                if (Save())
-                {
-                    ApplyButton.IsEnabled = false;
-                    _updateSubscribeManager.CreateTask(_modifiedConfiguration, _updateFreeNodeChecker, false, true, serverSubscribe);
+                    _updateSubscribeManager.CreateTask(_modifiedConfiguration, _updateNodeChecker, true, serverSubscribe);
                 }
                 else
                 {
